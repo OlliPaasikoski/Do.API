@@ -14,7 +14,7 @@ namespace Do.API.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "task1", "task2" };
+            return new string[] { "task1", "task3" };
         }
 
         // GET api/tasks/5
