@@ -13,13 +13,13 @@
       "launchBrowser": true,
       "launchUrl": "api/values",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Production"
       }
     },
     "Do.API": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "http://localhost:5000/api/values",
+      "commandName": "IISExpress",
+      "launchBrowser": false,
+      "launchUrl": "http://localhost:1479/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
