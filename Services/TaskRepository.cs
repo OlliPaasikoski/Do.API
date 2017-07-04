@@ -46,7 +46,9 @@ namespace Do.API.Services
 
         public void UpdateTask(Task task)
         {
-            // to be implemented
+            // no implementation because EF takes care of this for us!
+            // remember to call this anyway in case we are mocking the 
+            // repository in a test project
         }
 
         public bool Save()

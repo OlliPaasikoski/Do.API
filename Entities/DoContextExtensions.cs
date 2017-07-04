@@ -16,7 +16,6 @@ namespace Do.API.Entities
             context.BlogPosts.RemoveRange(context.BlogPosts);
             context.SaveChanges();
 
-
             // init seed data
             var categories = new List<TaskCategory>()
             {
@@ -122,7 +121,15 @@ namespace Do.API.Entities
                     Title = "First two weeks of daily ab training completed",
                     Content = "Lorem ipsum dolor sit amet, vel errem perfecto dignissim no. Vel id vero tollit detracto. Ut quas sonet posidonium pri. His ea aperiri reformidans voluptatibus, ne lobortis adolescens duo, has an modo similique.",
                     Date = new DateTimeOffset(new DateTime(2017,6,5)),
-                    ImageUrl = "https://dummyimage.com/600x400"
+                    ImageUrl = "https://dummyimage.com/600x400",
+                    RelatedTasks = new List<BlogPostTask>()
+                    {
+                        new BlogPostTask()
+                        {
+                            BlogPostId = new Guid("688db62d-f019-41c6-a592-2701587815f9"),
+                            TaskId = categories.Where(c => c.Title == "Physical Exercise").FirstOrDefault().Tasks.FirstOrDefault().Id
+                        }
+                     }
                 }
             };
 

@@ -26,5 +26,7 @@ namespace Do.API.Entities
         [ForeignKey("CategoryId")]
         public TaskCategory Category { get; set; }
         public Guid CategoryId { get; set; }
+        public ICollection<BlogPostTask> RelatedBlogs { get; set; }
+            = new List<BlogPostTask>();
     }
 }

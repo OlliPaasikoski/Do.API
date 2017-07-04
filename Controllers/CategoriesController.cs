@@ -9,6 +9,7 @@ using AutoMapper;
 using Do.API.Models;
 using Do.API.Entities;
 using Microsoft.AspNetCore.Http;
+using Do.API.Helpers;
 
 namespace Do.API.Controllers
 {
@@ -16,10 +17,15 @@ namespace Do.API.Controllers
     public class CategoriesController : Controller
     {
         private ITaskCategoryRepository _categoryRepository;
+        private const int maxCategoryPageSize = 20;
+        private IUrlHelper _urlHelper;
 
-        public CategoriesController(ITaskRepository taskRepository, ITaskCategoryRepository categoryRepository)
+        public CategoriesController(ITaskRepository taskRepository, 
+            ITaskCategoryRepository categoryRepository,
+            IUrlHelper urlHelper)
         {
             _categoryRepository = categoryRepository;
+            _urlHelper = urlHelper;
         }
 
         [HttpPost]
@@ -54,12 +60,40 @@ namespace Do.API.Controllers
             return NotFound();
         }
 
+
         // GET api/categories
-        [HttpGet()]
-        public IActionResult GetCategories()
+        // inline query parameters
+        // public IActionResult GetCategories([FromQuery(Name = "page")] int pageNumber = 1, int pageSize = 10)
+        [HttpGet(Name = "GetCategories")]
+        public IActionResult GetCategories(CategoriesResourceParameters categoriesResourceParameters)
         {
+            // inline query parameters check
+            // pageSize = (pageSize > maxCategoryPageSize) ? maxCategoryPageSize : pageSize;
+
             // throw new Exception("Random exception for testing purposes");
-            var categoriesFromRepo = _categoryRepository.GetCategories();
+            var categoriesFromRepo = _categoryRepository.GetCategories(categoriesResourceParameters);
+
+
+            var previousPageLink = categoriesFromRepo.HasPrevious ?
+                CreateCategoriesResourceUri(categoriesResourceParameters,
+                ResourceUriType.PreviousPage) : null;
+
+            var nextPageLink = categoriesFromRepo.HasNext ?
+                CreateCategoriesResourceUri(categoriesResourceParameters,
+                ResourceUriType.NextPage) : null;
+
+            var paginationMetadata = new
+            {
+                totalCount = categoriesFromRepo.TotalCount,
+                pageSize = categoriesFromRepo.PageSize,
+                currentPage = categoriesFromRepo.CurrentPage,
+                totalPages = categoriesFromRepo.TotalPages,
+                previousPageLink = previousPageLink,
+                nextPageLink = nextPageLink
+            };
+
+            Response.Headers.Add("X-Pagination", 
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
 
             var categories = Mapper.Map<IEnumerable<TaskCategoryDto>>(categoriesFromRepo);
             return Ok(categories);
@@ -75,6 +109,39 @@ namespace Do.API.Controllers
                 return StatusCode(500, "An unexpected fault happened. Try again later."); 
             }
             */
+        }
+
+        private string CreateCategoriesResourceUri(
+            CategoriesResourceParameters categoriesResourceParameters,
+            ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.NextPage:
+                    return _urlHelper.Link("GetCategories",
+                        new
+                        {
+                            pageNumber = categoriesResourceParameters.PageNumber + 1,
+                            pageSize = categoriesResourceParameters.PageSize,
+                            searchQuery = categoriesResourceParameters.SearchQuery
+                        });
+                case ResourceUriType.PreviousPage:
+                    return _urlHelper.Link("GetCategories",
+                        new
+                        {
+                            pageNumber = categoriesResourceParameters.PageNumber - 1,
+                            pageSize = categoriesResourceParameters.PageSize,
+                            searchQuery = categoriesResourceParameters.SearchQuery
+                        });               
+                default:
+                    return _urlHelper.Link("GetCategories",
+                        new
+                        {
+                            pageNumber = categoriesResourceParameters.PageNumber,
+                            pageSize = categoriesResourceParameters.PageSize,
+                            searchQuery = categoriesResourceParameters.SearchQuery
+                        });
+            }
         }
 
         // GET api/categories/5

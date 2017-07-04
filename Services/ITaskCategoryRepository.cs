@@ -1,4 +1,5 @@
 ﻿using Do.API.Entities;
+using Do.API.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Do.API.Services
 {
     public interface ITaskCategoryRepository
     {
-        IEnumerable<TaskCategory> GetCategories();
+        PagedList<TaskCategory> GetCategories(CategoriesResourceParameters categoriesResourceParameters);
         IEnumerable<TaskCategory> GetCategories(IEnumerable<Guid> categoryIds);
         TaskCategory GetCategory(Guid categoryId);
         bool CategoryExists(Guid categoryId);

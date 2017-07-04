@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Do.API.Entities;
+using Do.API.Helpers;
 
 namespace Do.API.Services
 {
@@ -40,9 +41,30 @@ namespace Do.API.Services
             _context.TaskCategories.Remove(category);
         }
 
-        public IEnumerable<TaskCategory> GetCategories()
+        public PagedList<TaskCategory> GetCategories(CategoriesResourceParameters categoriesResourceParameters)
         {
-            return _context.TaskCategories.OrderBy(tc => tc.Title);
+            var collectionBeforePaging = _context.TaskCategories
+                                            .OrderBy(tc => tc.Title)
+                                            .AsQueryable();
+
+
+            // TO DO: Filtering by fields, no suitable field in categories atm
+
+            // Searching
+
+            if (!string.IsNullOrEmpty(categoriesResourceParameters.SearchQuery))
+            {
+                var searchQueryForWhereClause = categoriesResourceParameters.SearchQuery
+                    .Trim().ToLowerInvariant();
+
+                collectionBeforePaging = collectionBeforePaging
+                    .Where(a => a.Title.Contains(searchQueryForWhereClause)
+                    || a.Description.Contains(searchQueryForWhereClause));
+            }
+
+            return PagedList<TaskCategory>.Create(collectionBeforePaging, 
+                categoriesResourceParameters.PageNumber, 
+                categoriesResourceParameters.PageSize);
         }
 
         public IEnumerable<TaskCategory> GetCategories(IEnumerable<Guid> categoryIds)

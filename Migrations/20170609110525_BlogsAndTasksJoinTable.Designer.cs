@@ -8,9 +8,10 @@ using Do.API.Entities;
 namespace Do.API.Migrations
 {
     [DbContext(typeof(DoContext))]
-    partial class DoContextModelSnapshot : ModelSnapshot
+    [Migration("20170609110525_BlogsAndTasksJoinTable")]
+    partial class BlogsAndTasksJoinTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

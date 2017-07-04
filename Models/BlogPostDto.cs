@@ -13,7 +13,7 @@ namespace Do.API.Models
         public string Content { get; set; }
         public DateTimeOffset Date { get; set; }
         public string ImageUrl { get; set; }
-        //public IEnumerable<Task> RelatedTasks { get; set; }
-         //   = new List<Task>();
+        public IEnumerable<Task> RelatedTasks { get; set; }
+            = new List<Task>();
     }
 }

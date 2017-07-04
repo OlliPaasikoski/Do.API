@@ -21,17 +21,8 @@ namespace Do.API.Entities
         public string ImageUrl { get; set; }
         [Required]
         public DateTimeOffset Date { get; set; }
-        //public ICollection<Task> RelatedTasks { get; set; }
-        //    = new List<Task>();
-    }
-
-    
-    public class BlogPostTask
-    {
-        public Guid BlogPostId { get; set; }
-        public Guid TaskId { get; set; }
-        public BlogPost BlogPost { get; set; }
-        public Task Task { get; set; }
+        public ICollection<BlogPostTask> RelatedTasks { get; set; }
+            = new List<BlogPostTask>();
     }
     
 }

@@ -19,7 +19,8 @@ namespace Do.API.Services
         {
             return _context.BlogPosts
                 .OrderByDescending(b => b.Date)
-                .ThenBy(b => b.Title).ToList();          
+                .ThenBy(b => b.Title).ToList();
+                
         }
     }
 }
